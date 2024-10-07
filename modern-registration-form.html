@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Modern Registration Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-header {
+            background-color: #4a90e2;
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .form-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .form-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .form-content {
+            padding: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 16px;
+            color: #333;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            outline: none;
+            background: transparent;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-bottom-color: #4a90e2;
+        }
+        .form-group label {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            font-size: 16px;
+            color: #999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus ~ label,
+        .form-group input:valid ~ label {
+            top: -20px;
+            font-size: 12px;
+            color: #4a90e2;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #3a7bc8;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .login-link a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+            .form-header {
+                padding: 20px;
+            }
+            .form-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h2>Create Account</h2>
+            <p>Join us today and get started!</p>
+        </div>
+        <div class="form-content">
+            <form id="registrationForm">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" required>
+                    <label for="username">Username</label>
+                    <div class="error" id="usernameError"></div>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">Email</label>
+                    <div class="error" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required>
+                    <label for="password">Password</label>
+                    <div class="error" id="passwordError"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="error" id="confirmPasswordError"></div>
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+            <div class="login-link">
+                Already have an account? <a href="#login">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            validateInputs();
+        });
+
+        function validateInputs() {
+            const usernameValue = username.value.trim();
+            const emailValue = email.value.trim();
+            const passwordValue = password.value.trim();
+            const confirmPasswordValue = confirmPassword.value.trim();
+
+            if (usernameValue === '') {
+                setError(username, 'Username is required');
+            } else {
+                setSuccess(username);
+            }
+
+            if (emailValue === '') {
+                setError(email, 'Email is required');
+            } else if (!isValidEmail(emailValue)) {
+                setError(email, 'Provide a valid email address');
+            } else {
+                setSuccess(email);
+            }
+
+            if (passwordValue === '') {
+                setError(password, 'Password is required');
+            } else if (passwordValue.length < 8) {
+                setError(password, 'Password must be at least 8 characters');
+            } else {
+                setSuccess(password);
+            }
+
+            if (confirmPasswordValue === '') {
+                setError(confirmPassword, 'Please confirm your password');
+            } else if (confirmPasswordValue !== passwordValue) {
+                setError(confirmPassword, "Passwords don't match");
+            } else {
+                setSuccess(confirmPassword);
+            }
+        }
+
+        function setError(input, message) {
+            const formGroup = input.parentElement;
+            const errorDisplay = formGroup.querySelector('.error');
+            errorDisplay.innerText = message;
+            formGroup.classList.add('error');
+            formGroup.classList.remove('success');
+        }
+
+        function setSuccess(input) {
+            const formGroup = input.parentElement;
+            const errorDisplay = formGroup.querySelector('.error');
+            errorDisplay.innerText = '';
+            formGroup.classList.add('success');
+            formGroup.classList.remove('success');
+        }
+
+        function isValidEmail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+    </script>
+</body>
+</html>
